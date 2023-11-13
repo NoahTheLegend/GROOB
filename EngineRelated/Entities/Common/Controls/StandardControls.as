@@ -17,7 +17,6 @@ void onInit(CBlob@ this)
 	this.addCommandID("putin");
 	this.addCommandID("getout");
 	this.addCommandID("detach");
-	this.addCommandID("cycle");
 
 	this.getCurrentScript().runFlags |= Script::tick_myplayer;
 	this.getCurrentScript().removeIfTag = "dead";
@@ -238,8 +237,8 @@ void onTick(CBlob@ this)
 				else
 				{
 					// send cycle command
-					CBitStream params;
-					this.SendCommand(this.getCommandID("cycle"), params);
+					//CBitStream params;
+					//this.SendCommand(this.getCommandID("cycle"), params);
 				}
 
 				this.ClearMenus();

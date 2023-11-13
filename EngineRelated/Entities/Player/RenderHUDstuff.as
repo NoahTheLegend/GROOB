@@ -2,7 +2,6 @@
 #include "ClientVars.as";
 
 #define CLIENT_ONLY
-const u16 replenish_time = 90;
 
 float ratio = f32(getDriver().getScreenWidth()) / f32(getDriver().getScreenHeight());
 pistol gun = pistol(); 
@@ -128,23 +127,18 @@ void hud(int id)
 			s8 ammo = b.get_s8("ammo");
 
 			SColor ammo_color = color_white;
-			if (ammo != max)
+			if (ammo < max)
 			{
 				u32 time = b.get_u32("lastshot");
 				u32 diff = getGameTime()-time;
+
 				if (diff > 30)
 				{
+					u16 replenish_time = b.exists("replenish_time") ? b.get_u16("replenish_time") : 90;
 					f32 blink = 255-Maths::Abs(Maths::Sin(f32(diff/(0.5f+(2-diff/(replenish_time/2)))))*(diff/2.0f));
 					ammo_color.setRed(blink);
 					ammo_color.setGreen(blink);
 					ammo_color.setBlue(blink);
-
-					if (diff >= replenish_time && !b.hasTag("requested_replenish"))
-					{
-						b.Tag("requested_replenish");
-						CBitStream params;
-						b.SendCommand(b.getCommandID("replenish_ammo"), params);
-					}
 				}
 			}
 

@@ -178,7 +178,7 @@ void WriteConfig(CRules@ this, ConfigMenu@ menu) // save config
             Option@ fov = menu.sections[0].options[0];
             if (fov !is null)
             {
-                fov.slider.description = ""+local.get_f32("fov");
+                fov.slider.description = local.get_f32("fov")<140?""+local.get_f32("fov"):"Quake pro";
             }
         }
 

@@ -4,6 +4,8 @@
 #include "ClientConfig.as";
 #include "TreeDeeSound.as"
 
+const u16 replenish_time = 90;
+
 void onInit(CBlob@ this)
 {
 	this.set_u8("prop_id", 1);
@@ -19,10 +21,11 @@ void onInit(CBlob@ this)
 	this.addCommandID(shooting_cmd);
 	this.addCommandID(sync_ammo);
 	this.addCommandID(replenish_ammo);
-	this.addCommandID("cycle");
+	//this.addCommandID("cycle");
 
 	this.set_s8("max_ammo", 8);
 	this.set_s8("ammo", 8);
+	this.set_u16("replenish_time", replenish_time);
 	
 	this.chatBubbleOffset = Vec2f(-20000, -50000);
 	this.maxChatBubbleLines = -1;
@@ -36,8 +39,18 @@ void onInit(CBlob@ this)
 	this.getCurrentScript().removeIfTag = "dead";
 }
 
+void onSetPlayer(CBlob@ this, CPlayer@ player)
+{
+	if (player !is null)
+	{
+		//this.set_s8("max_ammo", 8);
+		//this.set_s8("ammo", 8);
+	}
+}
+
 void onTick(CBlob@ this)
 {
+	printf(""+this.get_s8("ammo"));
 	if (isClient())
 	{
 		if (this.isMyPlayer())
@@ -46,6 +59,40 @@ void onTick(CBlob@ this)
 			{
 				ManageCamera(this);
 				ManageShooting(this);
+			}
+			
+			//Ammo restoring
+			s8 max = this.get_s8("max_ammo");
+			s8 ammo = this.get_s8("ammo");
+
+			if (ammo < max)
+			{
+				u32 time = this.get_u32("lastshot");
+				u32 diff = getGameTime()-time;
+				if (diff > 30)
+				{
+					if (ammo == 0)
+					{
+						if (diff >= replenish_time && !this.hasTag("requested_replenish"))
+						{
+							this.Tag("requested_replenish");
+							CBitStream params;
+							params.write_s8(max);
+							this.SendCommand(this.getCommandID("replenish_ammo"), params);
+						}
+					}
+					else if (ammo < max)
+					{
+						if (diff >= replenish_time/3)
+						{
+							this.Tag("requested_replenish");
+							this.set_u32("lastshot", getGameTime());
+							CBitStream params;
+							params.write_s8(ammo+1);
+							this.SendCommand(this.getCommandID("replenish_ammo"), params);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -139,7 +186,14 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		}
 		else if (cmd == this.getCommandID(replenish_ammo))
 		{
-			this.set_s8("ammo",this.get_s8("max_ammo"));
+			s8 requested;
+			if (!params.saferead_s8(requested)) return;
+
+			s8 amt = this.get_s8("max_ammo");
+			if (requested > 0)
+				amt = Maths::Min(amt, requested);
+
+			this.set_s8("ammo", amt);
 
 			CBitStream params1;
 			params1.write_s8(this.get_s8("ammo"));
@@ -153,9 +207,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (!params.saferead_s8(ammo)) return;
 
 		this.set_s8("ammo", ammo);
-		if (this.hasTag("requested_replenish")) 
+		if (this.isMyPlayer() && this.hasTag("requested_replenish")) 
 		{
-			PlayTreeDeeSound("LaserCharge.ogg", this.getPosition(), 1.0f, this.get_f32("pitch")+0.25f);
+			s8 max = this.get_s8("max_ammo");
+			s8 cur = this.get_s8("ammo");
+
+			string sound = cur < max ? "LaserChargeShort.ogg" : "LaserCharge.ogg"; 
+			PlayTreeDeeSound(sound, this.getPosition(), 1.0f, 1.0f);
 	
 			this.Untag("requested_replenish");
 		}
