@@ -24,7 +24,6 @@ void Shoot(CBlob@ this)
 	bt.write_Vec2f(this.getPosition());
 	bt.write_f32(this.get_f32("dir_x"));
 	bt.write_bool(boool(this.getTeamNum()));
-	
 	uint8 cmnd = this.getCommandID(shooting_cmd);
 	this.SendCommand(cmnd, bt);
 }

@@ -170,8 +170,6 @@ void onTick(CBlob@ this)
 {
 	if(!this.isMyPlayer()) return;
 	if (this.get_bool("stuck")) return;
-	s8 ammo = this.get_s8("ammo");
-	if (ammo <= 0 && this.getSprite().isAnimationEnded()) return;
 
 	if(index > 0)
 		index--;

@@ -11,6 +11,7 @@ class ThreeDeeMap
 {
 	string map_tile_sheet;
 	Vertex[] Vertexes;
+	//u16[] IDs;
 	
 	string sky_texture;
 	
@@ -34,8 +35,24 @@ class ThreeDeeMap
 	ThreeDeeMap(string _map_name, string _map_tile_sheet, string _map_lightmap, string _map_heightmap, string _skybox_name)
 	{
 		Vertexes.clear();
-		map_tile_sheet = _map_tile_sheet+".png";
-		sky_texture = _skybox_name+".png";
+		map_tile_sheet = _map_tile_sheet;
+		sky_texture = _skybox_name;
+		
+		if(Texture::exists(map_tile_sheet))
+		{
+			Texture::destroy(map_tile_sheet);
+			Texture::createFromFile(map_tile_sheet, map_tile_sheet+".png");
+		}
+		else
+			Texture::createFromFile(map_tile_sheet, map_tile_sheet+".png");
+			
+		if(Texture::exists(sky_texture))
+		{
+			Texture::destroy(sky_texture);
+			Texture::createFromFile(sky_texture, sky_texture+".png");
+		}
+		else
+			Texture::createFromFile(sky_texture, sky_texture+".png");
 		
 		if(Texture::exists(_map_name))
 		{
@@ -106,6 +123,8 @@ class ThreeDeeMap
 						if(height_start > 0)
 						{
 							//floor under "solid"
+							//IDs.push_back(Vertexes.length); IDs.push_back(Vertexes.length+1); IDs.push_back(Vertexes.length+2);
+							//IDs.push_back(Vertexes.length); IDs.push_back(Vertexes.length+2); IDs.push_back(Vertexes.length+3);
 							Vertexes.push_back(Vertex(y,	0,	x,		0,			0,	lightMapImage.get(x*2, 		y*2)));
 							Vertexes.push_back(Vertex(y,	0,	x+1,	x_UVStep,	0,	lightMapImage.get(x*2+1, 	y*2)));
 							Vertexes.push_back(Vertex(y+1,	0,	x+1,	x_UVStep,	1,	lightMapImage.get(x*2+1, 	y*2+1)));
@@ -114,6 +133,8 @@ class ThreeDeeMap
 							//ceiling before "solid"
 							if(height_start < 25)
 							{
+								//IDs.push_back(Vertexes.length); IDs.push_back(Vertexes.length+1); IDs.push_back(Vertexes.length+2);
+								//IDs.push_back(Vertexes.length); IDs.push_back(Vertexes.length+2); IDs.push_back(Vertexes.length+3);
 								Vertexes.push_back(Vertex(y,	height_start,	x+1,	x_UVStep,	0,	lightMapImage.get(x*2+1,	y*2)));
 								Vertexes.push_back(Vertex(y,	height_start,	x,		x_UVStep*2,	0,	lightMapImage.get(x*2,		y*2)));
 								Vertexes.push_back(Vertex(y+1,	height_start,	x,		x_UVStep*2,	1,	lightMapImage.get(x*2,		y*2+1)));
@@ -137,7 +158,7 @@ class ThreeDeeMap
 							uint id = WallIDfromColor(clr);
 							if(id == -1)
 							{
-								print("id: "+clr);
+								//print("id: "+clr);
 							}
 							
 							//right
@@ -180,6 +201,8 @@ class ThreeDeeMap
 								else if(r_start)
 								{
 									r_start = false;
+									//IDs.push_back(Vertexes.length-2); IDs.push_back(Vertexes.length-1); IDs.push_back(Vertexes.length);
+									//IDs.push_back(Vertexes.length-2); IDs.push_back(Vertexes.length); IDs.push_back(Vertexes.length+1);
 									Vertexes.push_back(Vertex(y,	i,	x+1,	id*x_UVStep+x_UVStep,	r_prev_start_height-i,	lightMapImage.get(x*2+1, y*2)));
 									Vertexes.push_back(Vertex(y+1,	i,	x+1,	id*x_UVStep,			r_prev_start_height-i,	lightMapImage.get(x*2+1, y*2+1)));
 								}
@@ -187,6 +210,8 @@ class ThreeDeeMap
 							if(r_start)
 							{
 								r_start = false;
+								//IDs.push_back(Vertexes.length-2); IDs.push_back(Vertexes.length-1); IDs.push_back(Vertexes.length);
+								//IDs.push_back(Vertexes.length-2); IDs.push_back(Vertexes.length); IDs.push_back(Vertexes.length+1);
 								Vertexes.push_back(Vertex(y,	height_start,	x+1,	id*x_UVStep+x_UVStep,	r_prev_start_height-height_start,	lightMapImage.get(x*2+1, y*2)));
 								Vertexes.push_back(Vertex(y+1,	height_start,	x+1,	id*x_UVStep,			r_prev_start_height-height_start,	lightMapImage.get(x*2+1, y*2+1)));
 							}
@@ -207,6 +232,8 @@ class ThreeDeeMap
 								else if(l_start)
 								{
 									l_start = false;
+									//IDs.push_back(Vertexes.length-2); IDs.push_back(Vertexes.length-1); IDs.push_back(Vertexes.length);
+									//IDs.push_back(Vertexes.length-2); IDs.push_back(Vertexes.length); IDs.push_back(Vertexes.length+1);
 									Vertexes.push_back(Vertex(y+1,	i,	x,	id*x_UVStep+x_UVStep,	l_prev_start_height-i,	lightMapImage.get(x*2, y*2+1)));
 									Vertexes.push_back(Vertex(y,	i,	x,	id*x_UVStep,			l_prev_start_height-i,	lightMapImage.get(x*2, y*2)));
 								}
@@ -214,6 +241,8 @@ class ThreeDeeMap
 							if(l_start)
 							{
 								l_start = false;
+								//IDs.push_back(Vertexes.length-2); IDs.push_back(Vertexes.length-1); IDs.push_back(Vertexes.length);
+								//IDs.push_back(Vertexes.length-2); IDs.push_back(Vertexes.length); IDs.push_back(Vertexes.length+1);
 								Vertexes.push_back(Vertex(y+1,	height_start,	x,	id*x_UVStep+x_UVStep,	l_prev_start_height-height_start,	lightMapImage.get(x*2, y*2+1)));
 								Vertexes.push_back(Vertex(y,	height_start,	x,	id*x_UVStep,			l_prev_start_height-height_start,	lightMapImage.get(x*2, y*2)));
 							}
@@ -234,6 +263,8 @@ class ThreeDeeMap
 								else if(u_start)
 								{
 									u_start = false;
+									//IDs.push_back(Vertexes.length-2); IDs.push_back(Vertexes.length-1); IDs.push_back(Vertexes.length);
+									//IDs.push_back(Vertexes.length-2); IDs.push_back(Vertexes.length); IDs.push_back(Vertexes.length+1);
 									Vertexes.push_back(Vertex(y,	i,	x,		id*x_UVStep+x_UVStep,	u_prev_start_height-i,	lightMapImage.get(x*2, y*2)));
 									Vertexes.push_back(Vertex(y,	i,	x+1,	id*x_UVStep,			u_prev_start_height-i,	lightMapImage.get(x*2+1, y*2)));
 								}
@@ -241,6 +272,8 @@ class ThreeDeeMap
 							if(u_start)
 							{
 								u_start = false;
+								//IDs.push_back(Vertexes.length-2); IDs.push_back(Vertexes.length-1); IDs.push_back(Vertexes.length);
+								//IDs.push_back(Vertexes.length-2); IDs.push_back(Vertexes.length); IDs.push_back(Vertexes.length+1);
 								Vertexes.push_back(Vertex(y,	height_start,	x,		id*x_UVStep+x_UVStep,	u_prev_start_height-height_start,	lightMapImage.get(x*2, y*2)));
 								Vertexes.push_back(Vertex(y,	height_start,	x+1,	id*x_UVStep,			u_prev_start_height-height_start,	lightMapImage.get(x*2+1, y*2)));
 							}
@@ -261,6 +294,8 @@ class ThreeDeeMap
 								else if(d_start)
 								{
 									d_start = false;
+									//IDs.push_back(Vertexes.length-2); IDs.push_back(Vertexes.length-1); IDs.push_back(Vertexes.length);
+									//IDs.push_back(Vertexes.length-2); IDs.push_back(Vertexes.length); IDs.push_back(Vertexes.length+1);
 									Vertexes.push_back(Vertex(y+1,	i,	x+1,	id*x_UVStep+x_UVStep,	d_prev_start_height-i,	lightMapImage.get(x*2+1, y*2+1)));
 									Vertexes.push_back(Vertex(y+1,	i,	x,		id*x_UVStep,			d_prev_start_height-i,	lightMapImage.get(x*2, y*2+1)));
 								}
@@ -268,6 +303,8 @@ class ThreeDeeMap
 							if(d_start)
 							{
 								d_start = false;
+								//IDs.push_back(Vertexes.length-2); IDs.push_back(Vertexes.length-1); IDs.push_back(Vertexes.length);
+								//IDs.push_back(Vertexes.length-2); IDs.push_back(Vertexes.length); IDs.push_back(Vertexes.length+1);
 								Vertexes.push_back(Vertex(y+1,	height_start,	x+1,	id*x_UVStep+x_UVStep,	d_prev_start_height-height_start,	lightMapImage.get(x*2+1, y*2+1)));
 								Vertexes.push_back(Vertex(y+1,	height_start,	x,		id*x_UVStep,			d_prev_start_height-height_start,	lightMapImage.get(x*2, y*2+1)));
 							}
@@ -580,6 +617,7 @@ namespace map_colors
 {
 	enum color
 	{
+		//tiles
 		nodraw_solid		= 0xFF000000,
 		green_spawn			= 0xFF2BE471,
 		red_spawn			= 0xFFD8002B,
@@ -592,9 +630,14 @@ namespace map_colors
 		red_metal			= 0xFFFF0000,
 		green_banner		= 0xFF3AFF61,
 		red_banner			= 0xFFFFA500,
+		metal_work          = 0xFF4B4319,
+		green_metal_shattered   = 0xFF379E49,
+		red_metal_shattered     = 0xFF783434,
 
+		// blobs
 		barrel				= 0xFF38ACFF,
-		box					= 0xFFC67823
+		box					= 0xFFC67823,
+		flamp				= 0xFF99846B,
 	};	
 }
 
@@ -602,29 +645,31 @@ uint WallIDfromColor(uint color)
 {
 	switch(color)
 	{
-		case map_colors::green_banner:
-		case map_colors::red_banner:
 		case map_colors::green_spawn:
 		case map_colors::red_spawn:
 		case map_colors::floor:
 		case map_colors::neutral_wall:
 			return 2;
-			break;
 		case map_colors::weird_wall:
 			return 3;
-			break;
 		case map_colors::green_brick:
 			return 4;
-			break;
 		case map_colors::red_brick:
 			return 5;
-			break;
 		case map_colors::green_metal:
 			return 6;
-			break;
 		case map_colors::red_metal:
 			return 7;
-			break;
+		case map_colors::green_metal_shattered:
+			return 8;
+		case map_colors::red_metal_shattered:
+			return 9;
+		case map_colors::metal_work:
+			return 10;
+		case map_colors::green_banner:
+			return 11;
+		case map_colors::red_banner:
+			return 12;
 		
 		//case map_colors::red_banner:
 		//	return 8;

@@ -13,8 +13,8 @@ void onTick(CSprite@ this)
 	const bool lmbClick	= blob.isKeyJustPressed(key_action1);
 	Vec2f vel = blob.getVelocity();
 	f32 ln = vel.Length();
-	
-	if (lmbClick || (this.isAnimation("shoot") && !this.isAnimationEnded()))
+	s8 ammo = blob.get_s8("ammo");
+	if ((ammo > 0 || blob.get_u32("lastshot") == getGameTime()) && (lmbClick || (this.isAnimation("shoot") && !this.isAnimationEnded())))
 	{
 		this.SetAnimation("shoot");
 	}

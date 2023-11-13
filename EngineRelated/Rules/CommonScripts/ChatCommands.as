@@ -7,6 +7,7 @@
 #include "MakeCrate.as";
 #include "MakeScroll.as";
 #include "TreeDeeMap.as";
+#include "isLocalhost.as";
 
 bool onServerProcessChat(CRules@ this, const string& in text_in, string& out text_out, CPlayer@ player)
 {
@@ -123,7 +124,7 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 
 bool onClientProcessChat(CRules@ this, const string& in text_in, string& out text_out, CPlayer@ player)
 {
-	if (text_in == "!map" && isServer() && isClient()) // regen map
+	if (text_in == "!map" && isLocalhost()) // regen map
 	{
 		ConfigFile cfg = ConfigFile(getMap().getMapName());
 		string map_name = cfg.read_string("map_name", "error");

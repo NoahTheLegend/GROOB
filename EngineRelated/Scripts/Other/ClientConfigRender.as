@@ -3,7 +3,7 @@
 #include "ClientVars.as";
 #include "ClientConfig.as";
 
-u8 type = 0;
+u8 type = 3;
 SColor col = SColor(255,255,0,0);
 f32 scale = 0;
 
@@ -46,6 +46,15 @@ void updateRulesProps(CRules@ this)
     this.set_u8("c_green", col.getGreen());
     this.set_u8("c_blue", col.getBlue());
     this.set_f32("crosshair_scale", scale);
+}
+
+// hack
+void onSetPlayer(CRules@ this, CBlob@ blob, CPlayer@ player)
+{
+    if (player !is null && player.isMyPlayer())
+    {
+        updateRulesProps(this);
+    }
 }
 
 void LoadConfig(CRules@ this, ClientVars@ vars) // load cfg from cache
@@ -212,9 +221,8 @@ void WriteConfig(CRules@ this, ConfigMenu@ menu) // save config
 
         Option crosshairscale = menu.sections[2].options[2];
         vars.crosshair_scale = crosshairscale.slider.scrolled;
-
+        
         //====================================================
-
         ConfigFile cfg = ConfigFile();
 	    if (cfg.loadFile("../Cache/GROOB/clientconfig.cfg"))
 	    {

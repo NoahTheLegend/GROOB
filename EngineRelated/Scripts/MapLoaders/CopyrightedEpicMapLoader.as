@@ -68,6 +68,11 @@ bool loadGroobMap(CMap@ _map, const string& in filename)
 				case map_colors::red_brick:
 				case map_colors::green_metal:
 				case map_colors::red_metal:
+				case map_colors::green_banner:
+				case map_colors::red_banner:
+				case map_colors::green_metal_shattered:
+				case map_colors::red_metal_shattered:
+				case map_colors::metal_work:
 				{
 					heightMapImage.setPixelPosition(pos);
 					uint minHeight = heightMapImage.readPixel().getRed()/10;
@@ -136,6 +141,11 @@ bool loadGroobMap(CMap@ _map, const string& in filename)
 					//	b.setPosition(pos+);
 					//}
 					server_CreateBlob("barrel", -1, pos);
+					break;
+				}
+				case map_colors::flamp:
+				{
+					server_CreateBlob("flamp", -1, pos);
 					break;
 				}
 				case map_colors::box:

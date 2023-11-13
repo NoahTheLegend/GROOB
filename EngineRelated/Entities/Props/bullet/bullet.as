@@ -19,7 +19,7 @@ void onInit(CBlob@ this)
     //this.SetLightRadius(40.0f);
     //this.SetLightColor(this.getTeamNum() == 0 ? SColor(255, 0, 0, 100) : SColor(255, 100, 0, 0));
 
-	this.server_SetTimeToDie(2.0f);
+	this.server_SetTimeToDie(3.0f);
 }
 
 bool doesCollideWithBlob( CBlob@ this, CBlob@ blob)

@@ -31,12 +31,27 @@ void onInit(CBlob@ this)
 			ThreeDeeMap@ three_dee_map = getThreeDeeMap();
 			if(three_dee_map !is null)
 			{
-				//print("box");
 				Vec2f intPos = this.getPosition()/8;
 				Vertex[] Vertexes = {	Vertex(-0.25, 1.0, 0, 0,0,three_dee_map.lightMapImage.get(intPos.x, intPos.y)),
 										Vertex(0.75, 0.0, 0, 1,1,three_dee_map.lightMapImage.get(intPos.x, intPos.y)),
 										Vertex(-0.25, 0.0, 0, 0,1,three_dee_map.lightMapImage.get(intPos.x, intPos.y))};
 				string tile_sheet = "barrel.png";
+				Object obj = Object(tile_sheet, Vertexes);
+				this.set("object", @obj);
+			}
+			//u16[] IDs = {0,1,2};
+		}
+
+		else if(this.getConfig() == "flamp")
+		{
+			ThreeDeeMap@ three_dee_map = getThreeDeeMap();
+			if(three_dee_map !is null)
+			{
+				Vec2f intPos = this.getPosition()/8;
+				Vertex[] Vertexes = {	Vertex(-0.25, 2.5, 0.0, 0.0, 0, three_dee_map.lightMapImage.get(intPos.x, intPos.y)),
+    									Vertex( 1.25, -1.25, 0.0, 1.25, 1.5, three_dee_map.lightMapImage.get(intPos.x, intPos.y)),
+    									Vertex(-0.25, -1.25, 0.0, 0.0, 1.5, three_dee_map.lightMapImage.get(intPos.x, intPos.y))};
+				string tile_sheet = "flamp.png";
 				Object obj = Object(tile_sheet, Vertexes);
 				this.set("object", @obj);
 			}
@@ -48,7 +63,6 @@ void onInit(CBlob@ this)
 			ThreeDeeMap@ three_dee_map = getThreeDeeMap();
 			if(three_dee_map !is null)
 			{
-				//print("box");
 				Vec2f intPos = this.getPosition()/8;
 				Vertex[] Vertexes = {	Vertex(-0.5, 2.0, 0, 	0,0,	three_dee_map.lightMapImage.get(intPos.x, intPos.y)),
 										Vertex(1.5, 0.0, 0, 	0.125,0.25,	three_dee_map.lightMapImage.get(intPos.x, intPos.y)),

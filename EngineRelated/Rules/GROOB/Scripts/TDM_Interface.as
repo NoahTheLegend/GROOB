@@ -18,21 +18,21 @@ void DrawQuickHelpText()
 {
 	GUI::SetFont("default");
 
-	string text = "RCTRL - focus camera";
+	string text = "Shift - dash\nRCTRL - focus camera";
 	SColor col = SColor(155, 255, 255, 255);
 
 	f32 sh = getDriver().getScreenHeight();
 	CBlob@ local = getLocalPlayerBlob();
 	if (local !is null)
 	{
-		text = local.get_bool("stuck") ? "RCTRL: unfocused" : "RCTRL: focused";
+		text = local.get_bool("stuck") ? "Shift - dash\nRCTRL: unfocused" : "Shift - dash\nRCTRL: focused";
 		col.setBlue(100);
 	}
 	else
 	{
-		GUI::DrawText("Turn music on", Vec2f(76, sh-32), col);
+		GUI::DrawText("Turn music on", Vec2f(76, sh-40), col);
 	}
-	GUI::DrawText(text, Vec2f(76, sh-20), col);
+	GUI::DrawText(text, Vec2f(76, sh-28), col);
 }
 
 void onRender(CRules@ this)

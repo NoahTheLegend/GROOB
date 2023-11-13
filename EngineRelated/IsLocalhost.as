@@ -2,5 +2,5 @@
 
 bool isLocalhost()
 {
-	return false; // change this if localhost lmao
+	return true; // change this if localhost lmao
 }

@@ -1,8 +1,7 @@
 #include "PlayerCommon.as";
 #include "isLocalhost.as";
 #include "ClientVars.as";
-#include "ClientConfig.as";
-#include "TreeDeeSound.as"
+#include "TreeDeeSound.as";
 
 const u16 replenish_time = 90;
 
@@ -15,14 +14,14 @@ void onInit(CBlob@ this)
 	this.set_f32("dir_y", 0.0f);
 	this.getShape().SetRotationsAllowed(false);
 	this.getShape().getConsts().net_threshold_multiplier = 0.5f;
-	this.set_f32("pitch", this.getTeamNum()==0?1.0:0.75f);
 
 	this.addCommandID(camera_sync_cmd);
 	this.addCommandID(shooting_cmd);
 	this.addCommandID(sync_ammo);
 	this.addCommandID(replenish_ammo);
 	//this.addCommandID("cycle");
-
+	
+	this.set_f32("pitch", this.getTeamNum()==0?1.0:0.75f);
 	this.set_s8("max_ammo", 8);
 	this.set_s8("ammo", 8);
 	this.set_u16("replenish_time", replenish_time);
@@ -30,27 +29,17 @@ void onInit(CBlob@ this)
 	this.chatBubbleOffset = Vec2f(-20000, -50000);
 	this.maxChatBubbleLines = -1;
 	
-	this.SetLight(false);
+	//this.SetLight(false);
     //this.SetLightRadius(80.0f);
     //this.SetLightColor(SColor(255, 200, 140, 170));
 	//this.server_SetHealth(1.5f);
-	
+
 	this.getCurrentScript().runFlags |= Script::tick_not_attached;
 	this.getCurrentScript().removeIfTag = "dead";
 }
 
-void onSetPlayer(CBlob@ this, CPlayer@ player)
-{
-	if (player !is null)
-	{
-		//this.set_s8("max_ammo", 8);
-		//this.set_s8("ammo", 8);
-	}
-}
-
 void onTick(CBlob@ this)
 {
-	printf(""+this.get_s8("ammo"));
 	if (isClient())
 	{
 		if (this.isMyPlayer())
@@ -69,28 +58,26 @@ void onTick(CBlob@ this)
 			{
 				u32 time = this.get_u32("lastshot");
 				u32 diff = getGameTime()-time;
-				if (diff > 30)
+
+				if (ammo == 0)
 				{
-					if (ammo == 0)
+					if (diff >= replenish_time && !this.hasTag("requested_replenish"))
 					{
-						if (diff >= replenish_time && !this.hasTag("requested_replenish"))
-						{
-							this.Tag("requested_replenish");
-							CBitStream params;
-							params.write_s8(max);
-							this.SendCommand(this.getCommandID("replenish_ammo"), params);
-						}
+						this.Tag("requested_replenish");
+						CBitStream params;
+						params.write_s8(max);
+						this.SendCommand(this.getCommandID("replenish_ammo"), params);
 					}
-					else if (ammo < max)
+				}
+				else if (ammo < max)
+				{
+					if (diff >= replenish_time/6)
 					{
-						if (diff >= replenish_time/3)
-						{
-							this.Tag("requested_replenish");
-							this.set_u32("lastshot", getGameTime());
-							CBitStream params;
-							params.write_s8(ammo+1);
-							this.SendCommand(this.getCommandID("replenish_ammo"), params);
-						}
+						this.Tag("requested_replenish");
+						this.set_u32("lastshot", getGameTime());
+						CBitStream params;
+						params.write_s8(ammo+1);
+						this.SendCommand(this.getCommandID("replenish_ammo"), params);
 					}
 				}
 			}
