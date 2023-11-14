@@ -18,6 +18,7 @@ class ClientVars {
     f32 crosshair_scale;
     f32 crosshaircolor;
     u8 crosshaircolor_final;
+    f32 mouse_sensitivity;
     
     ClientVars()
     {
@@ -32,5 +33,6 @@ class ClientVars {
         crosshair_scale = 1.0f;
         crosshaircolor = 0;
         crosshaircolor_final = 0;
+        mouse_sensitivity = 0;
     }
 };

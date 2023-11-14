@@ -6,6 +6,7 @@
 u8 type = 3;
 SColor col = SColor(255,255,0,0);
 f32 scale = 0;
+f32 sensitivity = 0.5f;
 
 void onInit(CRules@ this)
 {
@@ -46,6 +47,7 @@ void updateRulesProps(CRules@ this)
     this.set_u8("c_green", col.getGreen());
     this.set_u8("c_blue", col.getBlue());
     this.set_f32("crosshair_scale", scale);
+    this.set_f32("sensitivity", sensitivity);
 }
 
 // hack
@@ -74,6 +76,7 @@ void LoadConfig(CRules@ this, ClientVars@ vars) // load cfg from cache
         cfg.add_f32("crosshair", 0);
         cfg.add_f32("crosshair_scale", 1.0f);
         cfg.add_f32("crosshair_color", 0);
+        cfg.add_f32("mouse_sensitivity", 0.5f);
         //====================================================
 
 		cfg.saveFile("GROOB/clientconfig.cfg");
@@ -93,6 +96,7 @@ void LoadConfig(CRules@ this, ClientVars@ vars) // load cfg from cache
         vars.crosshair_scale = cfg.read_f32("crosshair_scale");
         vars.crosshaircolor = cfg.read_f32("crosshair_color", 0);
         vars.crosshaircolor_final = Maths::Round(vars.crosshaircolor*(crosshair_cols-1));
+        vars.mouse_sensitivity = cfg.read_f32("mouse_sensitivity", 0.5f);
         //====================================================
     }
 }
@@ -100,7 +104,7 @@ void LoadConfig(CRules@ this, ClientVars@ vars) // load cfg from cache
 void SetupUI(CRules@ this) // add options here
 {
     Vec2f menu_pos = Vec2f(15,150);
-    Vec2f menu_dim = Vec2f(400, 400);
+    Vec2f menu_dim = Vec2f(415, 500);
     ConfigMenu setmenu(menu_pos, menu_dim);
     
     Vec2f quarter = Vec2f(menu_dim.x/2, menu_dim.y/2);
@@ -114,7 +118,12 @@ void SetupUI(CRules@ this) // add options here
         Section camera("Camera", section_pos, quarter);
         
         // name, pos, slider, checkbox
-        Option fov("Field of view", section_pos+camera.padding+Vec2f(0,40), true, false);
+        Option sensitivity("Mouse sensitivity", section_pos+camera.padding+Vec2f(0,40), true, false);
+        sensitivity.slider.setSnap(10);
+        sensitivity.setSliderPos(vars.mouse_sensitivity);
+        sensitivity.setSliderTextMode(1);
+
+        Option fov("Field of view", sensitivity.pos+Vec2f(0,40), true, false);
         fov.setSliderPos(vars.fov);
         fov.setSliderTextMode(2);
 
@@ -124,6 +133,7 @@ void SetupUI(CRules@ this) // add options here
         Option revshake("Reverse lean side", camshake.pos+Vec2f(0,50), false, true);
         revshake.setCheck(vars.reverse_shake);
 
+        camera.addOption(sensitivity);
         camera.addOption(fov);
         camera.addOption(camshake);
         camera.addOption(revshake);
@@ -184,7 +194,7 @@ void WriteConfig(CRules@ this, ConfigMenu@ menu) // save config
         CBlob@ local = getLocalPlayerBlob();
         if (local !is null)
         {
-            Option@ fov = menu.sections[0].options[0];
+            Option@ fov = menu.sections[0].options[1];
             if (fov !is null)
             {
                 fov.slider.description = local.get_f32("fov")<140?""+local.get_f32("fov"):"Quake pro";
@@ -193,14 +203,17 @@ void WriteConfig(CRules@ this, ConfigMenu@ menu) // save config
 
         //camera
         //====================================================
-        Option fov = menu.sections[0].options[0];
+        Option sensitivity = menu.sections[0].options[0];
+        vars.mouse_sensitivity = sensitivity.slider.scrolled;
+
+        Option fov = menu.sections[0].options[1];
         vars.fov = fov.slider.scrolled;
         vars.fov_final = min_fov + vars.fov*max_fov;
 
-        Option camshake = menu.sections[0].options[1];
+        Option camshake = menu.sections[0].options[2];
         vars.cam_shake = camshake.slider.scrolled;
 
-        Option revshake = menu.sections[0].options[2];
+        Option revshake = menu.sections[0].options[3];
         vars.reverse_shake = revshake.check.state;
 
         //sound
@@ -236,6 +249,7 @@ void WriteConfig(CRules@ this, ConfigMenu@ menu) // save config
             cfg.add_f32("crosshair", vars.crosshair);
             cfg.add_f32("crosshair_scale", vars.crosshair_scale);
             cfg.add_f32("crosshair_color", vars.crosshaircolor);
+            cfg.add_f32("mouse_sensitivity", vars.mouse_sensitivity);
             //====================================================
             // save config
 	    	cfg.saveFile("GROOB/clientconfig.cfg");
@@ -270,6 +284,7 @@ void onRender(CRules@ this) // renderer for class, saves config if class throws 
     	        type = vars.crosshair_final;
                 col = getCrosshairColor(vars.crosshaircolor_final);
                 scale = vars.crosshair_scale;
+                sensitivity = vars.mouse_sensitivity;
                 updateRulesProps(this);
     	    }
         }

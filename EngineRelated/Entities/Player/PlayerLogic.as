@@ -25,9 +25,11 @@ void onInit(CBlob@ this)
 	this.set_s8("max_ammo", 8);
 	this.set_s8("ammo", 8);
 	this.set_u16("replenish_time", replenish_time);
+	this.set_u32("ammo_bonus", 0);
 	
 	this.chatBubbleOffset = Vec2f(-20000, -50000);
 	this.maxChatBubbleLines = -1;
+	//this.server_SetHealth(0.5f);
 	
 	//this.SetLight(false);
     //this.SetLightRadius(80.0f);
@@ -38,8 +40,18 @@ void onInit(CBlob@ this)
 	this.getCurrentScript().removeIfTag = "dead";
 }
 
+void onDie(CBlob@ this)
+{
+	if (isServer())
+	{
+		if (XORRandom(100) < 33)
+			server_CreateBlob("pick_hp", -1, this.getPosition());
+	}
+}
+
 void onTick(CBlob@ this)
 {
+	if (!hasAmmoBonus(this)) this.set_s8("ammo", Maths::Min(this.get_s8("ammo"), this.get_s8("max_ammo")));
 	if (isClient())
 	{
 		if (this.isMyPlayer())
@@ -54,14 +66,21 @@ void onTick(CBlob@ this)
 			s8 max = this.get_s8("max_ammo");
 			s8 ammo = this.get_s8("ammo");
 
+			u32 time = this.get_u32("lastshot");
+			u32 diff = getGameTime()-time;
+
+			u16 new_replenish_time = replenish_time;
+			if (hasAmmoBonus(this))
+			{
+				new_replenish_time /= 2;
+				max *= 2;
+			}
+			
 			if (ammo < max)
 			{
-				u32 time = this.get_u32("lastshot");
-				u32 diff = getGameTime()-time;
-
 				if (ammo == 0)
 				{
-					if (diff >= replenish_time && !this.hasTag("requested_replenish"))
+					if (diff >= new_replenish_time && !this.hasTag("requested_replenish"))
 					{
 						this.Tag("requested_replenish");
 						CBitStream params;
@@ -71,12 +90,13 @@ void onTick(CBlob@ this)
 				}
 				else if (ammo < max)
 				{
-					if (diff >= replenish_time/6)
+					if (diff >= new_replenish_time/6)
 					{
 						this.Tag("requested_replenish");
 						this.set_u32("lastshot", getGameTime());
 						CBitStream params;
 						params.write_s8(ammo+1);
+
 						this.SendCommand(this.getCommandID("replenish_ammo"), params);
 					}
 				}
@@ -128,10 +148,13 @@ void ManageCamera(CBlob@ this)
 			c.setMousePosition(ScrMid);
 		}
 	}
+
+	f32 sensitivity = (getRules().exists("sensitivity") ? 21-getRules().get_f32("sensitivity")*20 : 10);
+
 	if(!this.get_bool("stuck") && d !is null && c !is null)
 	{
 		Vec2f ScrMid = Vec2f(f32(d.getScreenWidth()) / 2, f32(d.getScreenHeight()) / 2);
-		Vec2f dir = (c.getMouseScreenPos() - ScrMid)/10;
+		Vec2f dir = (c.getMouseScreenPos() - ScrMid)/sensitivity;
 		f32 dirX = this.get_f32("dir_x");
 		f32 dirY = this.get_f32("dir_y");
 		dirX += dir.x;
@@ -176,11 +199,16 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			s8 requested;
 			if (!params.saferead_s8(requested)) return;
 
-			s8 amt = this.get_s8("max_ammo");
-			if (requested > 0)
-				amt = Maths::Min(amt, requested);
+			s8 max = this.get_s8("max_ammo");
+			if (hasAmmoBonus(this))
+			{
+				max *= 2;
+			}
 
-			this.set_s8("ammo", amt);
+			if (requested > 0)
+				max = Maths::Min(max, requested);
+
+			this.set_s8("ammo", max);
 
 			CBitStream params1;
 			params1.write_s8(this.get_s8("ammo"));
@@ -199,10 +227,21 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			s8 max = this.get_s8("max_ammo");
 			s8 cur = this.get_s8("ammo");
 
+			if (hasAmmoBonus(this))
+			{
+				max *= 2;
+			}
+
 			string sound = cur < max ? "LaserChargeShort.ogg" : "LaserCharge.ogg"; 
 			PlayTreeDeeSound(sound, this.getPosition(), 1.0f, 1.0f);
 	
 			this.Untag("requested_replenish");
 		}
 	}
+}
+
+bool hasAmmoBonus(CBlob@ this)
+{
+	u32 bonus_time = this.get_u32("ammo_bonus");
+	return bonus_time > getGameTime();
 }

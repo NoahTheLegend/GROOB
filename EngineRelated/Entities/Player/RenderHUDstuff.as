@@ -23,7 +23,7 @@ class pistol
 	
 	pistol()
 	{
-		Vec2f ScS = Vec2f(getDriver().getScreenWidth(), getDriver().getScreenHeight());
+		Vec2f ScS = Vec2f(getDriver().getScreenWidth()+6, getDriver().getScreenHeight());
 		Vertex[] _v_const = 
 		{
 			Vertex(ScS.x/2-(ScS.y-ScS.y/2)/2+(ScS.y-ScS.y/2)/128, ScS.y/2, 0, 0, 0, color_white),
@@ -126,6 +126,12 @@ void hud(int id)
 			s8 max = b.get_s8("max_ammo");
 			s8 ammo = b.get_s8("ammo");
 
+			u32 bonus_time = b.get_u32("ammo_bonus");
+			if (bonus_time > getGameTime())
+			{
+				max *= 2;
+			}
+			
 			SColor ammo_color = color_white;
 			if (ammo < max)
 			{
