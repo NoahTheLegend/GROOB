@@ -9,9 +9,11 @@ void onInit(CSprite@ this)
     CBlob@ blob = this.getBlob();
 
 	// this.getCurrentScript().runFlags |= Script::tick_onground;
+	#ifndef STAGING
 	this.getCurrentScript().runFlags |= Script::tick_not_inwater;
 	this.getCurrentScript().runFlags |= Script::tick_moving;
 	this.getCurrentScript().removeIfTag = "dead";
+	#endif
 }
 
 void onTick(CSprite@ this)
@@ -27,11 +29,9 @@ void onTick(CSprite@ this)
         own = vars.ownfootsteps;
     }
     bool mp = blob.isMyPlayer();
-
     if (other || (own && mp))
     {
         if (!own && mp) return;
-
         f32 vel = blob.getVelocity().Length();
 	    if (vel > 0.25f)
 	    {

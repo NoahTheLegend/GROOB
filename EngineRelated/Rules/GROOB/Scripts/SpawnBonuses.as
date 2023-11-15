@@ -2,8 +2,8 @@
 #include "TreeDeeMap.as"
 
 const u16 frequency_min = 150;
-const u16 frequency = 900;
-const u16 frequency_rand = 150;
+const u16 frequency = 600;
+const u16 frequency_rand = 90;
 const u16 player_mod = 30; // decrease per player
 
 const string[] names = {

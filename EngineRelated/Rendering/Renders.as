@@ -34,6 +34,23 @@ void onTick(CRules@ this)
 	{
 		SetFov();
 	}
+
+	// spectator mode
+	CPlayer@ local = getLocalPlayer();
+	if (local !is null)
+	{
+		if (local.getTeamNum() == getRules().getSpectatorTeamNum())
+		{
+			humanHeight = 20.0f;
+			dir_y = -90;
+		}
+		else
+		{
+			humanHeight = 0.75f;
+		}
+	}
+	else
+		humanHeight = 0.75f;
 }
 
 void SetFov()

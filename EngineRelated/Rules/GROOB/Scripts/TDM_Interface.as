@@ -18,14 +18,14 @@ void DrawQuickHelpText()
 {
 	GUI::SetFont("default");
 
-	string text = "Shift - dash\nRCTRL - focus camera";
+	string text = "Shift - dash\nCTRL - focus camera";
 	SColor col = SColor(155, 255, 255, 255);
 
 	f32 sh = getDriver().getScreenHeight();
 	CBlob@ local = getLocalPlayerBlob();
 	if (local !is null)
 	{
-		text = local.get_bool("stuck") ? "Shift - dash\nRCTRL: unfocused" : "Shift - dash\nRCTRL: focused";
+		text = local.get_bool("stuck") ? "Shift - dash\nCTRL: unfocused" : "Shift - dash\nCTRL: focused";
 		col.setBlue(100);
 	}
 	else

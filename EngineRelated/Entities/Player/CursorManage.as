@@ -2,8 +2,8 @@
 
 void onInit(CSprite@ this)
 {
-	this.getCurrentScript().runFlags |= Script::tick_myplayer;
-	this.getCurrentScript().removeIfTag = "dead";
+	//this.getCurrentScript().runFlags |= Script::tick_myplayer; // broken on staging?
+	//this.getCurrentScript().removeIfTag = "dead";
 }
 
 void ManageCursors(CBlob@ this)
@@ -16,14 +16,12 @@ void ManageCursors(CBlob@ this)
 	{
 		getHUD().SetCursorImage("HideCursor.png");
 	}
+	
 }
 
 void onRender(CSprite@ this)
 {
-	if (g_videorecording)
-		return;
-
 	CBlob@ blob = this.getBlob();
-
+	if (!blob.isMyPlayer()) return;
 	ManageCursors(blob);
 }
