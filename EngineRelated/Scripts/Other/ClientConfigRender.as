@@ -87,7 +87,7 @@ void LoadConfig(CRules@ this, ClientVars@ vars) // load cfg from cache
         //====================================================
         vars.fov = cfg.read_f32("fov", 0.2f);
         vars.fov_final = min_fov + vars.fov*max_fov;
-        vars.cam_shake = cfg.read_f32("cam_shake", 0.5f);
+        vars.cam_shake = cfg.read_f32("cam_shake", 0.25f);
         vars.reverse_shake = cfg.read_bool("reverse_shake", false);
         vars.footsteps = cfg.read_bool("footsteps", true);
         vars.ownfootsteps = cfg.read_bool("ownfootsteps", true);
