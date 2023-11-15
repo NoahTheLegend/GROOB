@@ -19,7 +19,11 @@ void onInit(CRules@ this)
 {
 	Render::addScript(Render::layer_prehud, "Renders.as", "threedee", 0.0f);
 	Render::addScript(Render::layer_postworld, "Renders.as", "worldcover", 0.0f); if(!Texture::exists("cover")) Texture::createFromFile("cover", "cover.png");
-	
+	Render::addScript(Render::layer_prehud, "RedFlash.as", "flash", 10.0f);
+	Render::SetTransformScreenspace();
+	Render::addScript(Render::layer_prehud, "GreenFlash.as", "flash", 10.0f);
+	Render::SetTransformScreenspace();
+
 	SetFov();
 	//ThreeDeeMap@ three_dee_map = getThreeDeeMap();
 }
@@ -197,28 +201,28 @@ void threedee(int id)
 					{
 						case 1:
 						{
-							//CSprite@ sprite = blob.getSprite();
-							//if(sprite !is null)
-							//{
-							//	f32 ybit = 1.0000f/4.0000f;
-							//	f32 xbit = 1.0000f/8.0000f;
-							//	u16 frame = sprite.getFrame();
-							//	u8 u = frame/8;
-							//	
-							//	Vec2f Edir = Vec2f(1,0).RotateBy(blob.get_f32("dir_x"));
-							//	Vec2f Cdir = Vec2f(1,0).RotateBy(Vec2f(pos.x*16-blob.getPosition().x, pos.y*16-blob.getPosition().y).getAngleDegrees());
-							//	Edir.RotateBy(360-Cdir.getAngleDegrees());
-							//	f32 newangl = Edir.getAngleDegrees()+22.5;
-							//	u8 l = (newangl/45) % 8;
-							//	
-							//	Vertex[] edited_Vertexes = obj.Vertexes;
-							//	
-							//	edited_Vertexes[0].v = f32(u)*ybit;
-							//	edited_Vertexes[1].v = edited_Vertexes[2].v = f32(u+1)*ybit;
-							//	
-							//	edited_Vertexes[1].u = (l+1)*xbit;
-							//	edited_Vertexes[0].u = edited_Vertexes[2].u = l*xbit;
-								
+								CSprite@ sprite = blob.getSprite();
+								if(sprite !is null)
+								{
+									f32 ybit = 1.0000f/4.0000f;
+									f32 xbit = 1.0000f/8.0000f;
+									u16 frame = sprite.getFrame();
+									u8 u = frame/8;
+
+									Vec2f Edir = Vec2f(1,0).RotateBy(blob.get_f32("dir_x"));
+									Vec2f Cdir = Vec2f(1,0).RotateBy(Vec2f(pos.x*16-blob.getPosition().x, pos.y*16-blob.getPosition().y).getAngleDegrees());
+									Edir.RotateBy(360-Cdir.getAngleDegrees());
+									f32 newangl = Edir.getAngleDegrees()+22.5;
+									u8 l = (newangl/45) % 8;
+
+									Vertex[] edited_Vertexes = obj.Vertexes;
+
+									edited_Vertexes[0].v = f32(u)*ybit;
+									edited_Vertexes[1].v = edited_Vertexes[2].v = f32(u+1)*ybit;
+
+									edited_Vertexes[1].u = (l+1)*xbit;
+									edited_Vertexes[0].u = edited_Vertexes[2].u = l*xbit;
+								}
 								
 								Matrix::SetTranslation(model, translated_pos.x, -humanHeight, translated_pos.y);
 								Render::SetModelTransform(model);

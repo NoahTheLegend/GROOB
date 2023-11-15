@@ -6,7 +6,7 @@
 float ratio = f32(getDriver().getScreenWidth()) / f32(getDriver().getScreenHeight());
 pistol gun = pistol(); 
 
-void onInit(CBlob@ this)
+void onInit(CRules@ this)
 {
 	Render::addScript(Render::layer_posthud, "RenderHUDstuff.as", "hud", 2.0f);
 	if(gun !is null)
@@ -172,9 +172,10 @@ void hud(int id)
 
 int index = 0;
 
-void onTick(CBlob@ this)
+void onTick(CRules@ rules)
 {
-	if(!this.isMyPlayer()) return;
+	CBlob@ this = getLocalPlayerBlob();
+	if (this is null) return;
 	if (this.get_bool("stuck")) return;
 
 	if(index > 0)

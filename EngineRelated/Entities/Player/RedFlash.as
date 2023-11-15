@@ -5,12 +5,6 @@ float alpha = 0;
 
 u16[] IDs = {0, 1, 2, 0, 2, 3};
 
-void onInit(CBlob@ this)
-{
-	Render::addScript(Render::layer_prehud, "RedFlash.as", "flash", 10.0f);
-	Render::SetTransformScreenspace();
-}
-
 f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData )
 {
 	if (isClient() && this.isMyPlayer())

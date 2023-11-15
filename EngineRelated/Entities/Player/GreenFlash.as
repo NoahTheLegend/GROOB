@@ -5,12 +5,6 @@ float alpha = 0;
 
 u16[] IDs = {0, 1, 2, 0, 2, 3};
 
-void onInit(CBlob@ this)
-{
-	Render::addScript(Render::layer_prehud, "GreenFlash.as", "flash", 10.0f);
-	Render::SetTransformScreenspace();
-}
-
 void onHealthChange(CBlob@ this, f32 oldHealth)
 {
 	if (isClient() && this.isMyPlayer() && this.getHealth() > oldHealth)
