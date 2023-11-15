@@ -56,7 +56,11 @@ void onTick(CBlob@ this)
 	{
 		if (this.isMyPlayer())
 		{
-			if (!getHUD().hasMenus())
+			bool hasMenus = getHUD().hasMenus();
+#ifdef STAGING
+			hasMenus = false;
+#endif
+			if (!hasMenus)
 			{
 				ManageCamera(this);
 				ManageShooting(this);
@@ -133,6 +137,9 @@ void ManageCamera(CBlob@ this)
 	Driver@ d = getDriver();
 	bool esc = c.isKeyJustPressed(KEY_ESCAPE);
 	bool ctrl = c.isKeyJustPressed(KEY_RCONTROL);
+	#ifdef STAGING
+	ctrl = c.isKeyJustPressed(KEY_TAB);
+	#endif
 	//if(ctrl){ this.set_bool("stuck", !this.get_bool("stuck")); this.Sync("stuck", true);}
 	if(esc)
 	{

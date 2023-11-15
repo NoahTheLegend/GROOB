@@ -42,7 +42,11 @@ void onCollision( CBlob@ this, CBlob@ blob, bool solid )
 		if(blob.getTeamNum() == this.getTeamNum() || blob.hasTag("invincible"))
 			return;
 
-		if (isServer()) this.server_Hit(blob, Vec2f_zero, Vec2f_zero, 0.5f, 1);
+		if (isServer())
+		{
+			this.server_Hit(blob, Vec2f_zero, Vec2f_zero, 0.5f, 1);
+			this.Tag("dead");
+		}
 
 		if(isClient() && blob.getPlayer() !is null)
 			PlayTreeDeeSound("GrobberHit.ogg", this.getPosition(), 1.3, 0.9+ XORRandom(26)*0.01f);

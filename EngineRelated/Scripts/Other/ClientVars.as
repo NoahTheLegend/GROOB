@@ -22,17 +22,17 @@ class ClientVars {
     
     ClientVars()
     {
-        fov = 0.5f;
-        fov_final = fov;
-        cam_shake = 0.5f;
+        fov = 0.2f;
+        fov_final = 0.85f;
+        cam_shake = 0.3f;
         reverse_shake = false;
         footsteps = true;
         ownfootsteps = true;
         crosshair = 0;
         crosshair_final = 0;
-        crosshair_scale = 1.0f;
+        crosshair_scale = 0.1f;
         crosshaircolor = 0;
         crosshaircolor_final = 0;
-        mouse_sensitivity = 0;
+        mouse_sensitivity = 0.5f;
     }
 };

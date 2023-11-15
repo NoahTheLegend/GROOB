@@ -31,7 +31,18 @@ void onInit(CRules@ this)
         SetupUI(this);
     }
 }
-
+/*
+#ifdef STAGING
+void onTick(CRules@ this)
+{
+    ClientVars@ vars;
+    if (this.get("ClientVars", @vars))
+    {
+        LoadConfig(this, vars);
+    }
+}
+#endif
+*/
 void onRestart(CRules@ this)
 {
     if (isClient() && isServer() && getLocalPlayer() !is null)
@@ -63,7 +74,7 @@ void LoadConfig(CRules@ this, ClientVars@ vars) // load cfg from cache
 {
     ConfigFile cfg = ConfigFile();
 
-	if (!cfg.loadFile("../Cache/GROOB/clientconfig.cfg"))
+	if (!cfg.loadFile("../Cache/groobclientconfig.cfg"))
 	{
         // set default vars if file wasnt loaded
         error("Client config or vars could not load");
@@ -74,12 +85,12 @@ void LoadConfig(CRules@ this, ClientVars@ vars) // load cfg from cache
         cfg.add_bool("footsteps", true);
         cfg.add_bool("ownfootsteps", true);
         cfg.add_f32("crosshair", 0);
-        cfg.add_f32("crosshair_scale", 1.0f);
+        cfg.add_f32("crosshair_scale", 0.1f);
         cfg.add_f32("crosshair_color", 0);
         cfg.add_f32("mouse_sensitivity", 0.5f);
         //====================================================
 
-		cfg.saveFile("GROOB/clientconfig.cfg");
+		cfg.saveFile("groobclientconfig.cfg");
 	}
     else if (vars !is null)
     {
@@ -203,58 +214,89 @@ void WriteConfig(CRules@ this, ConfigMenu@ menu) // save config
 
         //camera
         //====================================================
-        Option sensitivity = menu.sections[0].options[0];
-        vars.mouse_sensitivity = sensitivity.slider.scrolled;
+        if (menu.sections.size()!=0)
+        {
+            if (menu.sections[0].options.size()!=0)
+            {
+                Option sensitivity = menu.sections[0].options[0];
+                vars.mouse_sensitivity = sensitivity.slider.scrolled;
 
-        Option fov = menu.sections[0].options[1];
-        vars.fov = fov.slider.scrolled;
-        vars.fov_final = min_fov + vars.fov*max_fov;
+                Option fov = menu.sections[0].options[1];
+                vars.fov = fov.slider.scrolled;
+                vars.fov_final = min_fov + vars.fov*max_fov;
 
-        Option camshake = menu.sections[0].options[2];
-        vars.cam_shake = camshake.slider.scrolled;
+                Option camshake = menu.sections[0].options[2];
+                vars.cam_shake = camshake.slider.scrolled;
 
-        Option revshake = menu.sections[0].options[3];
-        vars.reverse_shake = revshake.check.state;
+                Option revshake = menu.sections[0].options[3];
+                vars.reverse_shake = revshake.check.state;
+            }
 
-        //sound
-        Option footsteps = menu.sections[1].options[0];
-        vars.footsteps = footsteps.check.state;
+            if (menu.sections[1].options.size()!=0)
+            {
+                //sound
+                Option footsteps = menu.sections[1].options[0];
+                vars.footsteps = footsteps.check.state;
 
-        Option ownfootsteps = menu.sections[1].options[1];
-        vars.ownfootsteps = ownfootsteps.check.state;
+                Option ownfootsteps = menu.sections[1].options[1];
+                vars.ownfootsteps = ownfootsteps.check.state;
+            }
 
-        //other
-        Option crosshairtype = menu.sections[2].options[0];
-        vars.crosshair = crosshairtype.slider.scrolled;
-        vars.crosshair_final = Maths::Round(vars.crosshair*(crosshair_amt-1));
+            if (menu.sections[2].options.size()!=0)
+            {
+                //other
+                Option crosshairtype = menu.sections[2].options[0];
+                vars.crosshair = crosshairtype.slider.scrolled;
+                vars.crosshair_final = Maths::Round(vars.crosshair*(crosshair_amt-1));
 
-        Option crosshaircol = menu.sections[2].options[1];
-        vars.crosshaircolor = crosshaircol.slider.scrolled;
-        vars.crosshaircolor_final = Maths::Round(vars.crosshaircolor*(crosshair_cols-1));
+                Option crosshaircol = menu.sections[2].options[1];
+                vars.crosshaircolor = crosshaircol.slider.scrolled;
+                vars.crosshaircolor_final = Maths::Round(vars.crosshaircolor*(crosshair_cols-1));
 
-        Option crosshairscale = menu.sections[2].options[2];
-        vars.crosshair_scale = crosshairscale.slider.scrolled;
+                Option crosshairscale = menu.sections[2].options[2];
+                vars.crosshair_scale = crosshairscale.slider.scrolled;
+            }
         
-        //====================================================
-        ConfigFile cfg = ConfigFile();
-	    if (cfg.loadFile("../Cache/GROOB/clientconfig.cfg"))
-	    {
-            // write config
+        
             //====================================================
-            cfg.add_f32("fov", vars.fov);
-            cfg.add_f32("cam_shake", vars.cam_shake);
-            cfg.add_bool("reverse_shake", vars.reverse_shake);
-            cfg.add_bool("footsteps", vars.footsteps);
-            cfg.add_bool("ownfootsteps", vars.ownfootsteps);
-            cfg.add_f32("crosshair", vars.crosshair);
-            cfg.add_f32("crosshair_scale", vars.crosshair_scale);
-            cfg.add_f32("crosshair_color", vars.crosshaircolor);
-            cfg.add_f32("mouse_sensitivity", vars.mouse_sensitivity);
-            //====================================================
-            // save config
-	    	cfg.saveFile("GROOB/clientconfig.cfg");
-	    }
-        else error("Could not load config to save vars");
+            ConfigFile cfg = ConfigFile();
+	        if (cfg.loadFile("../Cache/groobclientconfig.cfg"))
+	        {
+                // write config
+                //====================================================
+                cfg.add_f32("fov", vars.fov);
+                cfg.add_f32("cam_shake", vars.cam_shake);
+                cfg.add_bool("reverse_shake", vars.reverse_shake);
+                cfg.add_bool("footsteps", vars.footsteps);
+                cfg.add_bool("ownfootsteps", vars.ownfootsteps);
+                cfg.add_f32("crosshair", vars.crosshair);
+                cfg.add_f32("crosshair_scale", vars.crosshair_scale);
+                cfg.add_f32("crosshair_color", vars.crosshaircolor);
+                cfg.add_f32("mouse_sensitivity", vars.mouse_sensitivity);
+                //====================================================
+                // save config
+	        	cfg.saveFile("groobclientconfig.cfg");
+	        }
+            else
+            {
+                error("Could not load config to save vars code 1");
+                error("Loading default preset");
+                //====================================================
+                cfg.add_f32("fov", 0.2f);
+                cfg.add_f32("cam_shake", 0.25f);
+                cfg.add_bool("reverse_shake", false);
+                cfg.add_bool("footsteps", true);
+                cfg.add_bool("ownfootsteps", true);
+                cfg.add_f32("crosshair", 0);
+                cfg.add_f32("crosshair_scale", 0.1f);
+                cfg.add_f32("crosshair_color", 0);
+                cfg.add_f32("mouse_sensitivity", 0.5f);
+                //====================================================
+
+		        cfg.saveFile("groobclientconfig.cfg");
+            }
+        }
+        else error("Could not load config to save vars code 2");
     }
 }
 
@@ -268,7 +310,7 @@ void onRender(CRules@ this) // renderer for class, saves config if class throws 
         if (this.get("ConfigMenu", @menu))
         {
             menu.render();
-            
+            if (menu.state == 0) GUI::DrawText("SETTINGS\nRCTRL", menu.pos+Vec2f(0,32), SColor(155,255,255,0));
             if (need_update)
             {
                 WriteConfig(this, menu);
