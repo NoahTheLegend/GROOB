@@ -138,7 +138,7 @@ void ManageCamera(CBlob@ this)
 	bool esc = c.isKeyJustPressed(KEY_ESCAPE);
 	bool ctrl = c.isKeyJustPressed(KEY_RCONTROL);
 	#ifdef STAGING
-	ctrl = c.isKeyJustPressed(KEY_TAB);
+	ctrl = c.isKeyJustPressed(KEY_RCONTROL) || c.isKeyJustPressed(KEY_TAB);
 	#endif
 	//if(ctrl){ this.set_bool("stuck", !this.get_bool("stuck")); this.Sync("stuck", true);}
 	if(esc)
