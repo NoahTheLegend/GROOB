@@ -69,7 +69,7 @@ void LoadConfig(CRules@ this, ClientVars@ vars) // load cfg from cache
         error("Client config or vars could not load");
         //====================================================
         cfg.add_f32("fov", 2.0f);
-        cfg.add_f32("cam_shake", 0.5f);
+        cfg.add_f32("cam_shake", 0.25f);
         cfg.add_bool("reverse_shake", false);
         cfg.add_bool("footsteps", true);
         cfg.add_bool("ownfootsteps", true);
