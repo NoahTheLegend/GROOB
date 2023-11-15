@@ -310,7 +310,7 @@ void onRender(CRules@ this) // renderer for class, saves config if class throws 
         if (this.get("ConfigMenu", @menu))
         {
             menu.render();
-            if (menu.state == 0) GUI::DrawText("SETTINGS\nRCTRL", menu.pos+Vec2f(0,32), SColor(155,255,255,0));
+            if (menu.state == 0) GUI::DrawText("SETTINGS\nRCTRL\n(TAB IF STAGING)", menu.pos+Vec2f(0,32), SColor(155,255,255,0));
             if (need_update)
             {
                 WriteConfig(this, menu);
