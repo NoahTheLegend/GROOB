@@ -38,7 +38,7 @@ void CreateBullet(CBlob@ this, CBitStream@ bt)
 		bullet.server_setTeamNum(unboool(bt.read_bool()));
 		bullet.SetDamageOwnerPlayer(this.getPlayer());
 		bullet.setPosition(pos+(Vec2f(1,0).RotateBy(dir))*4.5f);
-		bullet.setVelocity(Vec2f(5.0f, 0.0f).RotateBy(dir)+this.getVelocity()/2);
+		bullet.setVelocity(Vec2f(5.0f, 0.0f).RotateBy(dir)+this.getVelocity()/3);
 		bullet.Init();
 	}
 }

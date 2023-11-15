@@ -32,8 +32,8 @@ void onTick(CSprite@ this)
     {
         if (!own && mp) return;
 
-        f32 vel = blob.getShape().vellen;
-	    if (vel > 0.1f)
+        f32 vel = blob.getVelocity().Length();
+	    if (vel > 0.25f)
 	    {
 	    	if ((blob.getNetworkID() + getGameTime()) % Maths::Max(4,Maths::Round(10-vel)) == 0)
 	    	{

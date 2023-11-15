@@ -1,6 +1,6 @@
 #include "TreeDeeMap.as";
 #include "TreeDeeObjectsClass.as";
-#include "ThreeDeeNickNamesClass.as";
+//#include "ThreeDeeNickNamesClass.as";
 #include "TreeDeeCameraClass.as";
 #include "ClientVars.as";
 
@@ -162,6 +162,8 @@ void threedee(int id)
 		Matrix::SetTranslation(model, 0, 0, 0);
 		Render::SetModelTransform(model);
 		Render::RawTrianglesIndexed(three_dee_map.sky_texture, three_dee_map.skybox_Vertexes, three_dee_map.skybox_IDs);
+
+		Render::ClearZ();
 		
 		Render::SetAlphaBlend(false);
 
@@ -227,28 +229,28 @@ void threedee(int id)
 								if(b is null) break;
 								if(blob.getTeamNum() != b.getTeamNum()) break;
 
-								CPlayer@ player = blob.getPlayer();
-								if(player !is null)
-								{
-									NickName@ nick;
-									blob.get("N_N", @nick);
-									if(nick !is null)
-									{
-										Render::SetAlphaBlend(true);
-										//Render::SetZBuffer(false, true);
-										//Matrix::SetTranslation(model, translated_pos.x, 0.4, translated_pos.y);
-										//Render::SetModelTransform(model);
-										Render::RawTrianglesIndexed(nick.player_name, nick.Vertexes, nick.IDs);
-										Render::SetAlphaBlend(false);
-										//Render::SetZBuffer(true, true);
-										break;
-									}
-									else
-									{
-										NickName new_nick = NickName(player.isBot() ? "Default Grobber" : player.getUsername());
-										blob.set("N_N", @new_nick);
-									}
-								}
+								//CPlayer@ player = blob.getPlayer();
+								//if(player !is null)
+								//{
+								//	NickName@ nick;
+								//	blob.get("N_N", @nick);
+								//	if(nick !is null)
+								//	{
+								//		Render::SetAlphaBlend(true);
+								//		//Render::SetZBuffer(false, true);
+								//		//Matrix::SetTranslation(model, translated_pos.x, 0.4, translated_pos.y);
+								//		//Render::SetModelTransform(model);
+								//		Render::RawTrianglesIndexed(nick.player_name, nick.Vertexes, nick.IDs);
+								//		Render::SetAlphaBlend(false);
+								//		//Render::SetZBuffer(true, true);
+								//		break;
+								//	}
+								//	else
+								//	{
+								//		NickName new_nick = NickName(player.isBot() ? "Default Grobber" : player.getUsername());
+								//		blob.set("N_N", @new_nick);
+								//	}
+								//}
 								break;
 							//}
 						}

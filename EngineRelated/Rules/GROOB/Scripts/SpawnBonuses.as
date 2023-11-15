@@ -44,7 +44,7 @@ void onTick(CRules@ this)
         Vec2f pos = getSpawnPos();
         if (pos == Vec2f_zero)
         {
-            error("Could not spawn loot");
+            //error("Could not spawn loot");
             return;
         }
 
@@ -59,9 +59,27 @@ void onTick(CRules@ this)
 
 Vec2f getSpawnPos()
 {
+    CMap@ map = getMap();
+    if (map is null) return Vec2f_zero;
+    
+    u32 mw = map.tilemapwidth;
+    u32 mh = map.tilemapheight;
+
+    for (u8 i = 0; i < 50; i++)
+    {
+        u32 rw = XORRandom(mw);
+        u32 rh = XORRandom(mh);
+        if (map.getTile(Vec2f(rw*8, rh*8)).type != 32) continue;
+        return Vec2f(rw*16+8, rh*16+8);
+    }
+
+    return Vec2f_zero;
+}
+
+/*Vec2f getSpawnPos()
+{
     ThreeDeeMap@ three_dee_map = getThreeDeeMap();
 	if (three_dee_map is null) return Vec2f_zero;
-
     CMap@ map = getMap();
     if (map is null) return Vec2f_zero;
     
@@ -78,7 +96,7 @@ Vec2f getSpawnPos()
     }
 
     return Vec2f_zero;
-}
+}*/
 
 CBlob@ doSpawnLoot(CRules@ this, Vec2f pos, string name)
 {

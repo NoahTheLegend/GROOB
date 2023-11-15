@@ -3,7 +3,7 @@
 #include "ClientVars.as";
 #include "TreeDeeSound.as";
 
-const u16 replenish_time = 90;
+const u16 replenish_time = 60;
 
 void onInit(CBlob@ this)
 {
@@ -22,8 +22,8 @@ void onInit(CBlob@ this)
 	//this.addCommandID("cycle");
 	
 	this.set_f32("pitch", this.getTeamNum()==0?1.0:0.75f);
-	this.set_s8("max_ammo", 8);
-	this.set_s8("ammo", 8);
+	this.set_s8("max_ammo", 10);
+	this.set_s8("ammo", 10);
 	this.set_u16("replenish_time", replenish_time);
 	this.set_u32("ammo_bonus", 0);
 	
