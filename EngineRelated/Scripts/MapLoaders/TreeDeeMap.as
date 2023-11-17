@@ -41,18 +41,18 @@ class ThreeDeeMap
 		if(Texture::exists(map_tile_sheet))
 		{
 			Texture::destroy(map_tile_sheet);
-			Texture::createFromFile(map_tile_sheet, map_tile_sheet+".png");
+			Texture::createFromFile(map_tile_sheet, map_tile_sheet);
 		}
 		else
-			Texture::createFromFile(map_tile_sheet, map_tile_sheet+".png");
+			Texture::createFromFile(map_tile_sheet, map_tile_sheet);
 			
 		if(Texture::exists(sky_texture))
 		{
 			Texture::destroy(sky_texture);
-			Texture::createFromFile(sky_texture, sky_texture+".png");
+			Texture::createFromFile(sky_texture, sky_texture);
 		}
 		else
-			Texture::createFromFile(sky_texture, sky_texture+".png");
+			Texture::createFromFile(sky_texture, sky_texture);
 		
 		if(Texture::exists(_map_name))
 		{
